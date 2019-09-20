@@ -12,23 +12,35 @@ SimpleRESTManager::~SimpleRESTManager() {
 
 SimpleRESTManager::SimpleRESTManager() {
   listener = new SocketListener(DEFAULT_PORT);
-  message_loop();
+  std::thread loop(&SimpleRESTManager::message_loop, this);
+  loop.detach();
 }
 
 SimpleRESTManager::SimpleRESTManager(std::string ip_address, int port) {
   listener = new SocketListener(ip_address, port);
-  message_loop();
+  std::thread loop(&SimpleRESTManager::message_loop, this);
+  loop.detach();
 }
 
 void SimpleRESTManager::message_loop(void) {
   Message * msg;
   SimpleHTTPParser parser;
-  std::string command;
-  for ( ; ; ) {
-    msg = listener->get_next_message();
-    command = parser.get_request_target(msg);
 
-    printf("Command: %s\n", command.c_str());
+  while (true ) {
+    msg = listener->get_next_message();
+    handle_command(parser.get_request_target(msg));
     delete msg;
   }
+}
+
+void SimpleRESTManager::handle_command(std::string command) {
+  std::map<std::string, std::function<void()>>::iterator it;
+
+  it = handlers.find(command);
+  if ( it != handlers.end() ) {
+    it->second();
+  }
+}
+void SimpleRESTManager::register_handler(std::string name, std::function<void()> func) {
+  handlers[name] = func;
 }

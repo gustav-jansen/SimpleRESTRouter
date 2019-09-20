@@ -7,7 +7,7 @@ endif
 objects = Message.o SimpleHTTPParser.o InetAddress.o SocketListener.o SimpleRESTManager.o
 
 all: ${objects} server.o
-	${CPP} ${CFLAGS} -o server.x server.o ${objects}
+	${CPP} ${CFLAGS} -o server.x server.o ${objects} -lpthread
 
 %.o: %.cpp
 	${CPP} ${CFLAGS} -c $< -o $@
