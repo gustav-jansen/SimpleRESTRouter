@@ -1,8 +1,11 @@
 #include "SocketListener.hpp"
 
+#include <string>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
+#include "SimpleHTTPParser.hpp"
 
 SocketListener::~SocketListener() {
   close(listener_socket);
@@ -62,6 +65,8 @@ void SocketListener::listen_for_connections(int asocket, int queue_depth) {
 Message *SocketListener::get_next_message(void) {
   int asocket, buffer_length=1024, number_of_bytes_read;
   Message *msg;
+  SimpleHTTPParser parser;
+  std::string response;
 
   msg = new Message(buffer_length);
 
@@ -71,6 +76,9 @@ Message *SocketListener::get_next_message(void) {
     perror("read");
     exit(EXIT_FAILURE);
   }
+
+  response = parser.get_http_version(msg) + " 204 \n\n";
+  send(asocket, response.c_str(), response.length(), 0);
   close(asocket);
   return msg;
 }

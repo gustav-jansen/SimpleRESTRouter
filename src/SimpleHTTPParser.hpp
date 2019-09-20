@@ -7,6 +7,7 @@
 class SimpleHTTPParser {
 public:
   std::string get_request_target(Message *);
+  std::string get_http_version(Message *);
   std::string get_start_line(Message *);
 };
 #endif
