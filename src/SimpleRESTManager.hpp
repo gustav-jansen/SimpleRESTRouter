@@ -9,17 +9,18 @@
 #include <functional>
 
 #include "SocketListener.hpp"
+#include "SimpleRESTHandler.hpp"
 
 class SimpleRESTManager {
   SocketListener *listener;
-  std::map<std::string, std::function<void()>> handlers;
+  std::map<std::string, SimpleRESTHandler*> handlers;
 
 public:
   SimpleRESTManager();
   SimpleRESTManager(std::string ip_adress, int port);
   ~SimpleRESTManager();
   void message_loop(void);
-  void register_handler(std::string, std::function<void()>);
+  void register_handler(std::string, SimpleRESTHandler*);
   void handle_command(std::string);
 };
 #endif

@@ -34,13 +34,13 @@ void SimpleRESTManager::message_loop(void) {
 }
 
 void SimpleRESTManager::handle_command(std::string command) {
-  std::map<std::string, std::function<void()>>::iterator it;
+  std::map<std::string, SimpleRESTHandler*>::iterator it;
 
   it = handlers.find(command);
   if ( it != handlers.end() ) {
-    it->second();
+    it->second->handle();
   }
 }
-void SimpleRESTManager::register_handler(std::string name, std::function<void()> func) {
-  handlers[name] = func;
+void SimpleRESTManager::register_handler(std::string name, SimpleRESTHandler* handler) {
+  handlers[name] = handler;
 }
