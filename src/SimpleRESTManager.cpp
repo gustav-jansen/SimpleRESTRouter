@@ -36,11 +36,18 @@ void SimpleRESTManager::message_loop(void) {
 void SimpleRESTManager::handle_command(std::string command) {
   std::map<std::string, SimpleRESTHandler*>::iterator it;
 
-  it = handlers.find(command);
+  it = handlers.find(strip_tail_from_path(command));
   if ( it != handlers.end() ) {
     it->second->handle();
   }
 }
 void SimpleRESTManager::register_handler(std::string name, SimpleRESTHandler* handler) {
   handlers[name] = handler;
+}
+
+std::string SimpleRESTManager::strip_tail_from_path(std::string path) {
+  // Assume "/" in zeroth position
+  std::size_t pos = path.find_first_of("/", 1);
+  if ( pos != std::string::npos ) return path.substr(0, pos);
+  else return path;
 }

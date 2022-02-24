@@ -22,5 +22,7 @@ public:
   void message_loop(void);
   void register_handler(std::string, SimpleRESTHandler*);
   void handle_command(std::string);
+private:
+  std::string strip_tail_from_path(std::string path);
 };
 #endif
